@@ -1,4 +1,4 @@
-# VesselEye — Bangladesh Naval Research Edition
+# VesselEye 3.0 — Bangladesh Naval Research Edition
 
 An independent, civilian maritime open-source research prototype for a potential Bangladesh Navy innovation presentation. This is not an official Bangladesh Navy system, and does not claim approval or affiliation. Use official branding or restricted information only with appropriate written authorization. Not for navigation or operational decisions.
 
@@ -15,7 +15,19 @@ An independent, civilian maritime open-source research prototype for a potential
 - Online Wikidata lookup through the Cloudflare Worker for commercial vessel name, IMO or MMSI; includes manufacturer, registry port, inception, beam and photo source/license links when present. Limited to explicit civilian commercial vessel types; not an exhaustive registry. Rate limits or network errors degrade to local historical records and source links.
 - Vessel profile and provenance, saved records (browser-local storage), review checklist, JSON report, CSV directory and printable report (browser Save as PDF).
 - Bangladesh commercial port and maritime reference directory.
-- No live AIS feed, military monitoring, personal crew data, or automated scraping of restricted databases. Map markers are fictional, not historical or current positions of the real records. No AI API integration or authentication.
+- No live AIS feed, military monitoring, personal crew data, or automated scraping of restricted databases. Map markers are fictional, not historical or current positions of the real records. No AI API integration or authentication. The automatic summary is local and rule-based.
+
+## Release 3.0
+
+- Automatic Wikimedia Commons image preview when a linked file has supported image metadata, a recognized reusable license, and appropriate attribution. Otherwise the original file link remains available.
+- Persistent dark/light theme and commercial-vessel search shortcuts.
+- Profile completeness (not an accuracy or verification score), missing fields, reported ownership/manufacturer, and automatic rule-based summaries included in JSON and printable reports.
+- Empty results clear the selected profile to prevent accidental exports of unrelated records.
+- Existing Cloudflare API, local saved records, historical records, illustrative map, CSV export and review checklist are retained. No GFW token, local comparison tool or live AIS integration.
+
+The Commons image metadata request uses https://www.mediawiki.org/wiki/API:Imageinfo and the original file page for attribution and license details. The browser sends requests to Commons when a record has a photo source. Network or licensing failures fall back to the source link.
+
+Testing: JavaScript syntax check and Chromium fixture-driven tests with the previously captured Wikidata response and mocked Commons metadata/image. Live external requests could not be independently tested in the development environment.
 
 ## Data sources and terms
 
