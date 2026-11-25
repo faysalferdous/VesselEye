@@ -1,4 +1,4 @@
-# VesselEye 3.0 — Bangladesh Naval Research Edition
+# VesselEye 4.0 — Bangladesh Naval Research Edition
 
 An independent, civilian maritime open-source research prototype for a potential Bangladesh Navy innovation presentation. This is not an official Bangladesh Navy system, and does not claim approval or affiliation. Use official branding or restricted information only with appropriate written authorization. Not for navigation or operational decisions.
 
@@ -28,6 +28,23 @@ An independent, civilian maritime open-source research prototype for a potential
 The Commons image metadata request uses https://www.mediawiki.org/wiki/API:Imageinfo and the original file page for attribution and license details. The browser sends requests to Commons when a record has a photo source. Network or licensing failures fall back to the source link.
 
 Testing: JavaScript syntax check and Chromium fixture-driven tests with the previously captured Wikidata response and mocked Commons metadata/image. Live external requests could not be independently tested in the development environment.
+
+## Release 4.0 — Maritime reference desk
+
+The original vessel discovery, source review, saved records, existing report exports, theme and Cloudflare Worker are unchanged. The new desk is part of the main dashboard (not the separate JSON comparison tool).
+
+- **Geographic map:** optional interactive OpenStreetMap embed with five broad geographic region views. No tracking data or vessel markers are added to the external map. The original offline illustration remains available. [Map attribution](https://www.openstreetmap.org/copyright), [embed documentation](https://wiki.openstreetmap.org/wiki/Export).
+- **Marine weather:** on-demand public ECMWF WAM 0.25° wave height/period forecasts through the [Open-Meteo marine API](https://open-meteo.com/en/docs/marine-weather-api), at four fixed ocean reference points. UTC timestamps, missing-value labels and network-error handling. No automatic refresh, navigational guidance, or vessel-specific conditions. Free tier is for noncommercial research, subject to provider terms; attribution to Open-Meteo and ECMWF.
+- **Commercial ports:** official public authority information links for Chattogram, Mongla, Payra and Department of Shipping. No live arrival/departure feed.
+- **Historical incidents:** two dated NTSB investigations (Dali, 2024; El Faro, 2015), with searchable cards and official links. Not a comprehensive database.
+- **Local AI (experimental):** opt-in, selected public civilian record summarization via [WebLLM](https://webllm.mlc.ai/docs/user/get_started.html) 0.2.89 and SmolLM2-360M-Instruct. Model and library downloads may use significant bandwidth and storage; supported WebGPU hardware required. No API key or paid AI service. The existing rule-based summary remains available if unsupported or download fails. Generated output is not independently verified.
+- **Professional reports:** print-ready identity report with evidence fields, source and limitations. Use the browser print dialog to save as PDF. Original JSON, CSV and print exports retained.
+
+External map, weather and AI downloads are opt-in. Third-party hosts may log normal network metadata. Do not enter confidential data. No GFW tokens, military vessel tracking, crew identities, or live AIS were added. Not for navigation or official operational use.
+
+### Pre-release validation
+
+Executed the committed v4 script against a simulated DOM and fixture responses: 15 checks passed (existing app syntax/script order, initialization, region selection, map URL/close, forecast parsing and missing values, forecast error state, incident filter, no-WebGPU fallback, print generation, demo and empty-record controls). This is not an end-to-end browser test: external map tiles, real weather API, WebGPU model inference and actual PDF rendering were not verified in the development environment. The deployment should be smoke-tested on a supported browser.
 
 ## Data sources and terms
 
