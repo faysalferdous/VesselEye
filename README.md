@@ -1,4 +1,4 @@
-# VesselEye 4.0 — Bangladesh Naval Research Edition
+# VesselEye 4.0.1 — Bangladesh Naval Research Edition
 
 An independent, civilian maritime open-source research prototype for a potential Bangladesh Navy innovation presentation. This is not an official Bangladesh Navy system, and does not claim approval or affiliation. Use official branding or restricted information only with appropriate written authorization. Not for navigation or operational decisions.
 
@@ -45,6 +45,16 @@ External map, weather and AI downloads are opt-in. Third-party hosts may log nor
 ### Pre-release validation
 
 Executed the committed v4 script against a simulated DOM and fixture responses: 15 checks passed (existing app syntax/script order, initialization, region selection, map URL/close, forecast parsing and missing values, forecast error state, incident filter, no-WebGPU fallback, print generation, demo and empty-record controls). This is not an end-to-end browser test: external map tiles, real weather API, WebGPU model inference and actual PDF rendering were not verified in the development environment. The deployment should be smoke-tested on a supported browser.
+
+## Maintenance release 4.0.1
+
+- Clear unrelated vessel selection while a new search is pending; cancel requests and clear the profile on invalid search. Discard stale search results, handle malformed responses and clear fictional map selection when no record is selected.
+- Use a consistent field-presence test for completeness; report failed local-storage deletion rather than imply persistent data was removed.
+- Reset map and forecast displays when region changes; cancel obsolete forecasts, select sea grid cells, and reject forecasts with no usable values.
+- Reset local AI status on selection changes, discard outdated results, and check for a compatible WebGPU adapter with shader-f16 before model download.
+- Bump asset cache version.
+
+Regression suite: run `node tests/regression.mjs` from the repository. 29 checks passed using the actual patched JavaScript and simulated DOM, storage and network fixtures. Tests cover search, stale and malformed responses, offline fallback, public-vessel filters, CSV sanitization, report data, storage failures, theme, map and forecast states, incident filtering, AI fallback and mobile navigation state. Browser rendering, external service availability, actual GPU inference, and printed PDF output are not covered by this suite. Live HTTP testing was blocked by DNS resolution in the development environment.
 
 ## Data sources and terms
 
