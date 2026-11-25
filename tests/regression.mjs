@@ -13,7 +13,7 @@ const fetch=async u=>{u=String(u);if(u.includes('marine-api')){weatherUrl=u;cons
 class AC{constructor(){this.signal={aborted:false}}abort(){this.signal.aborted=true}}
 class Params{constructor(o){this.o=o}toString(){return Object.entries(this.o).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&')}}
 const U=class{constructor(s){if(!String(s).startsWith('https://'))throw Error();this.href=s;this.protocol='https:';this.hostname=s.split('/')[2];this.pathname='/'+s.split('/').slice(3).join('/')}static createObjectURL(){return 'blob:test'}static revokeObjectURL(){}};
-const code=app+'\n'+v4+'\nreturn {current:()=>current,report:()=>report(),select:v=>select(v),fromApi,csvCell,normalizeQuery,records:()=>records};';
+const code=app+'\n'+v4+'\nreturn {current:()=>current,report:()=>report(),select:v=>select(v),fromApi,csvCell,normalizeQuery,restoreRecord,records:()=>records};';
 const exec=new Function('document','window','navigator','localStorage','fetch','AbortController','URLSearchParams','URL','setTimeout','clearTimeout','setInterval','confirm',code);
 const e=exec(doc,window,{},storage,fetch,AC,Params,U,()=>0,()=>{},()=>{},()=>true);
 check('initial historical records',e.records().length===3&&e.current().historical);
@@ -39,11 +39,22 @@ weatherMode='pending';const wp=get('v4weatherLoad').onclick();get('v4weatherRegi
 weatherMode='missing';await get('v4weatherLoad').onclick();check('all-missing forecast rejected',get('v4weather').children.length===0&&get('v4weatherStatus').textContent.includes('unavailable'));
 weatherMode='fail';await get('v4weatherLoad').onclick();check('weather provider failure',get('v4weatherStatus').textContent.includes('unavailable'));
 get('v4caseFilter').value='2015';get('v4caseFilter').oninput();check('incident filter',get('v4cases').children.length===1&&get('v4cases').children[0].children[0].textContent.includes('El Faro'));
-await get('v4aiRun').onclick();check('unsupported WebGPU fallback',get('v4aiStatus').textContent.includes('unavailable'));
+await get('v4aiRun').onclick();check('security-paused AI fallback',get('v4aiStatus').textContent.includes('unavailable'));
 get('v4print').onclick();check('professional report print action',printCount===1&&body.children[0].children.some(n=>n.textContent==='03 / Limitations'));
 get('demo').onclick();check('fictional AI exclusion',get('v4aiRun').disabled&&e.current().demo&&markers[0].classList.contains('selected'));
 get('menuBtn').onclick();check('mobile navigation toggle',get('sidebar').classList.contains('open')&&get('menuBtn').attributes['aria-expanded']==='true');
-check('cache-busted scripts',html.includes('app.js?v=4.0.1')&&html.includes('v4.js?v=4.0.1'));
+check('cache-busted scripts',html.includes('app.js?v=4.0.2')&&html.includes('v4.js?v=4.0.2'));
+check('CSP denies remote scripts',html.includes("script-src 'self'")&&html.includes("object-src 'none'")&&html.includes("worker-src 'none'")&&!html.includes("script-src 'self' https:"));
+check('remote AI import removed',!v4.includes('https://esm.run/')&&!v4.includes('await import('));
+check('CSV fullwidth formula neutralization',e.csvCell('＝1+1').startsWith("\"'"));
+check('CSV leading newline neutralization',e.csvCell('\nhello').startsWith("\"'"));
+check('oversized record name bounded',e.fromApi({...commercial,name:'a'.repeat(400)},'9811000','').name.length===180);
+check('malformed record id rejected',e.fromApi({...commercial,id:123},'9811000','')===null);
+check('stored arbitrary record rejected',e.restoreRecord({recordId:'arbitrary',name:'x'})===null);
+const restored=e.restoreRecord({recordId:'wiki-Q104378621',name:'Ever Given',type:'container ship',imo:'9811000',url:'https://invalid.example/',verified:true});
+check('stored provenance canonicalized',restored.url==='https://www.wikidata.org/wiki/Q104378621'&&restored.verified===false);
+check('stored historical record canonicalized',e.restoreRecord({recordId:'history-ever-given',name:'changed'}).name==='Ever Given');
+get('v4mapLoad').onclick();check('map sandbox and no referrer',get('v4map').children[0].attributes.sandbox==='allow-scripts allow-same-origin'&&get('v4map').children[0].referrerPolicy==='no-referrer');
 return results;
 }
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');

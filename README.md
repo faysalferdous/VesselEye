@@ -1,4 +1,4 @@
-# VesselEye 4.0.1 — Bangladesh Naval Research Edition
+# VesselEye 4.0.2 — Bangladesh Naval Research Edition
 
 An independent, civilian maritime open-source research prototype for a potential Bangladesh Navy innovation presentation. This is not an official Bangladesh Navy system, and does not claim approval or affiliation. Use official branding or restricted information only with appropriate written authorization. Not for navigation or operational decisions.
 
@@ -55,6 +55,15 @@ Executed the committed v4 script against a simulated DOM and fixture responses: 
 - Bump asset cache version.
 
 Regression suite: run `node tests/regression.mjs` from the repository. 29 checks passed using the actual patched JavaScript and simulated DOM, storage and network fixtures. Tests cover search, stale and malformed responses, offline fallback, public-vessel filters, CSV sanitization, report data, storage failures, theme, map and forecast states, incident filtering, AI fallback and mobile navigation state. Browser rendering, external service availability, actual GPU inference, and printed PDF output are not covered by this suite. Live HTTP testing was blocked by DNS resolution in the development environment.
+
+## Security maintenance release 4.0.2
+
+The public dashboard now restricts executable content to same-origin scripts via a meta Content Security Policy. External network connections are limited to the existing identity API, Wikimedia Commons and Open-Meteo. OpenStreetMap is embedded in a sandbox. Inline styles are retained for the existing dynamic map and layout. Local AI runtime downloads are **paused** until a reviewed, reproducible and appropriately isolated integration is available; existing rule-based summaries, reports, search, map, weather and local saves remain supported.
+
+- Public identity responses are bounded at the record and field level; declared oversized responses are rejected. This is not a server-side rate limiter or a complete streaming response-size cap.
+- Saved records are restored with canonical source URLs and unverified provenance; unknown IDs are rejected. CSV export guards additional spreadsheet formula prefixes.
+- The regression workflow pins action references to full commit hashes and does not persist checkout credentials.
+- Scope and residual risks: see [security review](SECURITY-REVIEW.md).
 
 ## Data sources and terms
 
